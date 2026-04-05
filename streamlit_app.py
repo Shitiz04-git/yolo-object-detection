@@ -2,6 +2,26 @@
 YOLOv8 Object Detection System - Streamlit Web App
 Deployable on Streamlit Community Cloud (Free)
 """
+import sys
+import subprocess
+import os
+
+
+#Fix for missing Opencv dependencies
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
+
+try:
+    import cv2
+except ImportError:
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python-headless==4.8.1.78"])
+    import cv2
+    
+    
+# Fix for OpenCV on Streamlit Cloud
+if os.path.exists('/.dockerenv'):
+    subprocess.call(['apt-get', 'update', '-y'])
+    subprocess.call(['apt-get', 'install', '-y', 'libgl1-mesa-glx'])
 
 import streamlit as st
 import cv2
