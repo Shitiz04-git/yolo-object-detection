@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Object Detection Live Stream</title>
+    <style>
+        body { font-family: Arial; text-align: center; background: #1a1a1a; color: white; }
+        #video { border: 2px solid #00ff00; max-width: 90%; margin: 20px; }
+        #detections { background: #333; padding: 10px; margin: 10px; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; }
+        .btn-start { background: green; color: white; }
+        .btn-stop { background: red; color: white; }
+        .stats { background: #444; padding: 10px; margin: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Real-Time Object Detection</h1>
+    <div>
+        <button class="btn-start" onclick="startStream()">Start Stream</button>
+        <button class="btn-stop" onclick="stopStream()">Stop Stream</button>
+        <button onclick="getStatus()">Get Status</button>
+    </div>
+    <img id="video" width="800" height="600">
+    <div class="stats">
+        <h3>Detection Stats</h3>
+        <div id="detections">Waiting for stream...</div>
+    </div>
+
+    <script>
+        let ws = null;
+        const video = document.getElementById('video');
+        const detectionsDiv = document.getElementById('detections');
+
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:8765');
+            
+            ws.onopen = function() {
+                console.log('Connected to server');
+                detectionsDiv.innerHTML = 'Connected! Click Start Stream';
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'frame') {
+                    // Display image
+                    video.src = 'data:image/jpeg;base64,' + data.image;
+                    
+                    // Display detections
+                    let html = '<ul>';
+                    data.detections.forEach(det => {
+                        html += `<li>${det.class} - ${(det.confidence * 100).toFixed(1)}% confidence</li>`;
+                    });
+                    html += `</ul><p>Total Objects: ${data.total_objects}</p>`;
+                    detectionsDiv.innerHTML = html;
+                } else if (data.type === 'status') {
+                    detectionsDiv.innerHTML = `Status: Streaming=${data.streaming}, Clients=${data.clients}`;
+                }
+            };
+            
+            ws.onclose = function() {
+                console.log('Disconnected');
+                detectionsDiv.innerHTML = 'Disconnected. Refresh page to reconnect.';
+            };
+        }
+        
+        function startStream() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({command: 'start'}));
+                detectionsDiv.innerHTML = 'Streaming started...';
+            }
+        }
+        
+        function stopStream() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({command: 'stop'}));
+                detectionsDiv.innerHTML = 'Streaming stopped';
+            }
+        }
+        
+        function getStatus() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({command: 'status'}));
+            }
+        }
+        
+        // Connect when page loads
+        connectWebSocket();
+    </script>
+</body>
+</html>

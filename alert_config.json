@@ -1,0 +1,55 @@
+{
+    "email": {
+        "enabled": true,
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
+        "sender_email": "your_email@gmail.com",
+        "sender_password": "your_app_password",
+        "recipient_emails": [
+            "admin@example.com",
+            "security@example.com"
+        ]
+    },
+    "sms": {
+        "enabled": false,
+        "account_sid": "ACxxxxxxxxxxxxxx",
+        "auth_token": "xxxxxxxxxxxxxxxx",
+        "from_number": "+1234567890",
+        "to_numbers": [
+            "+9876543210"
+        ]
+    },
+    "webhook": {
+        "enabled": false,
+        "url": "https://your-webhook.com/alert",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    },
+    "rules": [
+        {
+            "object_type": "person",
+            "min_confidence": 0.7,
+            "min_count": 1,
+            "cooldown_seconds": 30
+        },
+        {
+            "object_type": "car",
+            "min_confidence": 0.6,
+            "min_count": 2,
+            "cooldown_seconds": 20
+        },
+        {
+            "object_type": "traffic light",
+            "min_confidence": 0.8,
+            "min_count": 1,
+            "cooldown_seconds": 10
+        },
+        {
+            "object_type": "fire hydrant",
+            "min_confidence": 0.75,
+            "min_count": 1,
+            "cooldown_seconds": 60
+        }
+    ]
+}

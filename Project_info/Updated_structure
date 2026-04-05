@@ -1,0 +1,28 @@
+ObjectDetectionProject/
+├── app/
+│   ├── __init__.py
+│   ├── detector.py          # YOLO detection logic
+│   ├── api.py               # REST API endpoints
+│   ├── security.py          # Auth, rate limiting, validation
+│   ├── database.py          # Data persistence
+│   ├── config.py            # Configuration management
+│   └── models.py            # Data models
+├── gui/
+│   ├── __init__.py
+│   ├── main_window.py       # Tkinter GUI
+│   └── utils.py             # GUI utilities
+├── tests/
+│   ├── test_api.py
+│   ├── test_detector.py
+│   └── test_security.py
+├── deployment/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── nginx.conf
+│   └── gunicorn.conf.py
+├── scripts/
+│   ├── train_custom.py      # Custom model training
+│   └── export_onnx.py       # Model export for deployment
+├── requirements.txt
+├── README.md
+└── .env.example
